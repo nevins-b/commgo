@@ -156,28 +156,28 @@ type TimedMetric struct {
 
 type ReplMetrics struct {
 	Apply struct {
-		Batches TimedMetric `bson:"batches"`
-		Ops     int64       `bson:"ops"`
-	} `bson:"apply"`
+		Batches TimedMetric `bson:"batches" json:",omitempty"`
+		Ops     int64       `bson:"ops" json:",omitempty"`
+	} `bson:"apply" json:",omitempty"`
 	Buffer struct {
-		Count        int64 `bson:"count"`
-		MaxSizeBytes int   `bson:"maxSizeBytes"`
-		SizeBytes    int64 `bson:"sizeBytes"`
-	} `bson:"buffer"`
+		Count        int64 `bson:"count" json:",omitempty"`
+		MaxSizeBytes int   `bson:"maxSizeBytes" json:",omitempty"`
+		SizeBytes    int64 `bson:"sizeBytes" json:",omitempty"`
+	} `bson:"buffer" json:",omitempty"`
 	Network struct {
-		Bytes          int64       `bson:"bytes"`
-		Getmores       TimedMetric `bson:"getmores"`
-		Ops            int64       `bson:"ops"`
-		ReadersCreated int64       `bson:"readersCreated"`
-	} `bson:"network"`
+		Bytes          int64       `bson:"bytes" json:",omitempty"`
+		Getmores       TimedMetric `bson:"getmores" json:",omitempty"`
+		Ops            int64       `bson:"ops" json:",omitempty"`
+		ReadersCreated int64       `bson:"readersCreated" json:",omitempty"`
+	} `bson:"network" json:",omitempty"`
 	Oplog struct {
-		Insert      TimedMetric `bson:"insert"`
-		InsertBytes int64       `bson:"insertBytes"`
-	} `bson:"oplog"`
+		Insert      TimedMetric `bson:"insert" json:",omitempty"`
+		InsertBytes int64       `bson:"insertBytes" json:",omitempty"`
+	} `bson:"oplog" json:",omitempty"`
 	Preload struct {
-		Docs    TimedMetric `bson:"docs"`
-		Indexes TimedMetric `bson:"indexes"`
-	} `bson:"preload"`
+		Docs    TimedMetric `bson:"docs" json:",omitempty"`
+		Indexes TimedMetric `bson:"indexes" json:",omitempty"`
+	} `bson:"preload" json:",omitempty"`
 }
 
 type TTLMetrics struct {
@@ -201,7 +201,7 @@ type MetricsInfo struct {
 	Record struct {
 		Moves int64 `bson:"moves"`
 	} `bson:"record"`
-	Repl ReplMetrics `bson:"repl"`
+	Repl ReplMetrics `bson:"repl" json:",omitempty"`
 	TTL  TTLMetrics  `bson:"ttl"`
 	OK   int         `bson:"ok"`
 }
@@ -213,12 +213,12 @@ type NetworkStats struct {
 }
 
 type OpcounterStats struct {
-	Command int `bson:"command"`
-	Delete  int `bson:"delete"`
-	Getmore int `bson:"getmore"`
-	Insert  int `bson:"insert"`
-	Query   int `bson:"query"`
-	Update  int `bson:"update"`
+	Command int `bson:"command" json:",omitempty"`
+	Delete  int `bson:"delete" json:",omitempty"`
+	Getmore int `bson:"getmore" json:",omitempty"`
+	Insert  int `bson:"insert" json:",omitempty"`
+	Query   int `bson:"query" json:",omitempty"`
+	Update  int `bson:"update" json:",omitempty"`
 }
 
 type DBRecordStats struct {
@@ -227,21 +227,21 @@ type DBRecordStats struct {
 }
 
 type RecordStatInfo struct {
-	AccessesNotInMem    int           `bson:"accessesNotInMemory"`
-	PageFaultExceptions int           `bson:"pageFaultExceptionsThrown"`
-	Admin               DBRecordStats `bson:"admin"`
-	Local               DBRecordStats `bson:"local"`
-	DBs                 bson.M        `bson:",inline"`
+	AccessesNotInMem    int                      `bson:"accessesNotInMemory"`
+	PageFaultExceptions int                      `bson:"pageFaultExceptionsThrown"`
+	Admin               DBRecordStats            `bson:"admin"`
+	Local               DBRecordStats            `bson:"local"`
+	DBs                 map[string]DBRecordStats `bson:",inline" json:",omitempty"`
 }
 
 type ReplStats struct {
-	SetName     string   `bson:"setName"`
-	SetVersion  int      `bson:"setVersion"`
-	IsMaster    bool     `bson:"ismaster"`
-	IsSecondary bool     `bson:"secondary"`
-	Hosts       []string `bson:"hosts"`
-	Primary     string   `bson:"primary"`
-	Me          string   `bson:"me"`
+	SetName     string   `bson:"setName" json:",omitempty"`
+	SetVersion  int      `bson:"setVersion" json:",omitempty"`
+	IsMaster    bool     `bson:"ismaster" json:",omitempty"`
+	IsSecondary bool     `bson:"secondary" json:",omitempty"`
+	Hosts       []string `bson:"hosts" json:",omitempty"`
+	Primary     string   `bson:"primary" json:",omitempty"`
+	Me          string   `bson:"me" json:",omitempty"`
 }
 
 type ServerStatus struct {
@@ -261,15 +261,14 @@ type ServerStatus struct {
 	Network            NetworkStats         `bson:"network"`
 	Ok                 int                  `bson:"ok"`
 	Opcounters         OpcounterStats       `bson:"opcounters"`
-	OpcountersRepl     OpcounterStats       `bson:"opcountersRepl"`
+	OpcountersRepl     OpcounterStats       `bson:"opcountersRepl" json:",omitempty"`
 	PID                int                  `bson:"pid"`
 	Process            string               `bson:"process"`
 	RecordStats        RecordStatInfo       `bson:"recordStats"`
-	Repl               ReplStats            `bson:"repl,omitempty"`
+	Repl               ReplStats            `bson:"repl,omitempty" json:",omitempty"`
 	Uptime             int                  `bson:"uptime"`
 	UptimeEstimate     int                  `bson:"uptimeEstimate"`
 	UptimeMillis       int                  `bson:"uptimeMillis"`
 	Version            string               `bson:"version"`
 	WriteBacksQueued   bool                 `bson:"writeBacksQueued"`
-	Misc               bson.M               `bson:",inline"`
 }
