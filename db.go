@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// for output of dbstats command
+// db.stats()
 
 type DBStats struct {
 	Db              string  `bson:"db"`
@@ -25,6 +25,25 @@ type DBStats struct {
 	} `bson:"dataFileVersion"`
 	Ok int `bson:"ok"`
 }
+
+// db.runCommand({ buildInfo : 1 })
+
+type BuildInfo struct {
+	Version            string `bson:"version"` 
+	GitVersion         string `bson:"gitVersion"`
+	SysInfo            string `bson:"sysInfo"`
+	LoaderFlags        string `bson:"loaderFlags"`
+	CompilerFlags      string `bson:"compilerFlags"`
+	Allocator          string `bson:"allocator"`
+	VersionArray       []int  `bson:"versionArray"`
+	JavascriptEngine   string `bson:"javascriptEngine"`
+	Bits               int    `bson:"bits"`
+	Debug              bool   `bson:"debug"`
+	MaxBsonObjectSize  int    `bson:"maxBsonObjectSize"`
+	Ok                 int    `bson:"ok"`
+}
+
+// db.adminCommand({ getLog : 1 })
 
 type GetLog struct {
 	LinesWritten int      `bson:"totalLinesWritten"`
