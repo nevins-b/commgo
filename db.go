@@ -1,8 +1,9 @@
 package commgo
 
 import (
-	"labix.org/v2/mgo/bson"
 	"time"
+
+	"labix.org/v2/mgo/bson"
 )
 
 // db.stats()
@@ -29,18 +30,18 @@ type DBStats struct {
 // db.runCommand({ buildInfo : 1 })
 
 type BuildInfo struct {
-	Version            string `bson:"version"` 
-	GitVersion         string `bson:"gitVersion"`
-	SysInfo            string `bson:"sysInfo"`
-	LoaderFlags        string `bson:"loaderFlags"`
-	CompilerFlags      string `bson:"compilerFlags"`
-	Allocator          string `bson:"allocator"`
-	VersionArray       []int  `bson:"versionArray"`
-	JavascriptEngine   string `bson:"javascriptEngine"`
-	Bits               int    `bson:"bits"`
-	Debug              bool   `bson:"debug"`
-	MaxBsonObjectSize  int    `bson:"maxBsonObjectSize"`
-	Ok                 int    `bson:"ok"`
+	Version           string `bson:"version"`
+	GitVersion        string `bson:"gitVersion"`
+	SysInfo           string `bson:"sysInfo"`
+	LoaderFlags       string `bson:"loaderFlags"`
+	CompilerFlags     string `bson:"compilerFlags"`
+	Allocator         string `bson:"allocator"`
+	VersionArray      []int  `bson:"versionArray"`
+	JavascriptEngine  string `bson:"javascriptEngine"`
+	Bits              int    `bson:"bits"`
+	Debug             bool   `bson:"debug"`
+	MaxBsonObjectSize int    `bson:"maxBsonObjectSize"`
+	Ok                int    `bson:"ok"`
 }
 
 // db.adminCommand({ getLog : 1 })
@@ -116,7 +117,6 @@ type LockQueueInfo struct {
 
 type GlobalLockStats struct {
 	TotalTime     int           `bson:"totalTime"`
-	LockTime      int           `bson:"lockTime"`
 	CurrentQueue  LockQueueInfo `bson:"currentQueue"`
 	ActiveClients LockQueueInfo `bson:"activeClients"`
 }
@@ -204,15 +204,23 @@ type TTLMetrics struct {
 	Passes      int64 `bson:"passes"`
 }
 
+type CursorMetrics struct {
+	TimedOut int64 `bson:"timedOut"`
+	Open     struct {
+		NoTimeout    int64 `bson:"noTimeout"`
+		Pinned       int64 `bson:"pinned"`
+		MultiTarget  int64 `bson:"multiTarget"`
+		SingleTarget int64 `bson:"singleTarget"`
+		Total        int64 `bson:"total"`
+	}
+}
+
 type MetricsInfo struct {
 	Document     DocMetrics `bson:"document"`
 	Operation    OpMetrics  `bson:"operation"`
 	GetLastError struct {
-		WTimeouts int64 `bson:"wtimeouts"`
-		WTime     struct {
-			Num         int `bson:"num"`
-			TotalMillis int `bson:"totalMillis"`
-		} `bson:"wtime"`
+		WTimeouts int64       `bson:"wtimeouts"`
+		WTime     TimedMetric `bson:"wtime"`
 	} `bson:"getLastError"`
 	QueryExecutor struct {
 		Scanned int64 `bson:"scanned"`
@@ -220,9 +228,18 @@ type MetricsInfo struct {
 	Record struct {
 		Moves int64 `bson:"moves"`
 	} `bson:"record"`
-	Repl ReplMetrics `bson:"repl" json:",omitempty"`
-	TTL  TTLMetrics  `bson:"ttl"`
-	OK   int         `bson:"ok"`
+	Cursor  CursorMetrics `bson:"cursor"`
+	Repl    ReplMetrics   `bson:"repl" json:",omitempty"`
+	Storage struct {
+		FreeList struct {
+			Search struct {
+				BucketExhausted int `bson:"bucketExhausted"`
+				Requests        int `bson:"requests"`
+				Scanner         int `bson:"scanned"`
+			} `bson:"search"`
+		} `bson:"freelist"`
+	} `bson:"storage"`
+	TTL TTLMetrics `bson:"ttl"`
 }
 
 type NetworkStats struct {
@@ -272,7 +289,7 @@ type ServerStatus struct {
 	ExtraInfo          ExtraInfo            `bson:"extra_info"`
 	GlobalLock         GlobalLockStats      `bson:"globalLock"`
 	Host               string               `bson:"host"`
-	IndexCounters      IndexStats           `bson:"indexCounters"`
+	IndexCounters      IndexStats           `bson:"indexCounters" json:",omitempty"`
 	LocalTime          time.Time            `bson:"localTime"`
 	Locks              LockInfo             `bson:"locks"`
 	Mem                MemInfo              `bson:"mem"`
@@ -283,7 +300,7 @@ type ServerStatus struct {
 	OpcountersRepl     OpcounterStats       `bson:"opcountersRepl" json:",omitempty"`
 	PID                int                  `bson:"pid"`
 	Process            string               `bson:"process"`
-	RecordStats        RecordStatInfo       `bson:"recordStats"`
+	RecordStats        RecordStatInfo       `bson:"recordStats" json:",omitempty"`
 	Repl               ReplStats            `bson:"repl,omitempty" json:",omitempty"`
 	Uptime             int                  `bson:"uptime"`
 	UptimeEstimate     int                  `bson:"uptimeEstimate"`
